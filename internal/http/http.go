@@ -15,6 +15,12 @@ func (o *Endpoints) handle() {
 	// k8s healthcheck /healthz as per convention
 	o.router.HandleFunc("/healthz", o.handleHealthz).Methods(http.MethodGet)
 
+	o.router.HandleFunc("/register", o.handleRegister).Methods(http.MethodPost)
+	o.router.HandleFunc("/updatepwd", o.handleUpdatePassword).Methods(http.MethodPost)
+	o.router.HandleFunc("/forgotpwd", o.handleForgotPassword).Methods(http.MethodPost)
+	o.router.HandleFunc("/realms", o.handleRealmList).Methods(http.MethodGet)
+	o.router.HandleFunc("/realms/{id}/players", o.handleRealmPlayers).Methods(http.MethodGet)
+
 	// index/static
 	o.router.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(uiFS)))
 }

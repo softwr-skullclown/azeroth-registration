@@ -3,8 +3,8 @@ package cmd
 import (
 	"context"
 
-	"github.com/spf13/cobra"
 	"github.com/softwr-skullclown/azeroth-registration/internal/http"
+	"github.com/spf13/cobra"
 )
 
 // serveCmd represents the serve command
