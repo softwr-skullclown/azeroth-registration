@@ -8,10 +8,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-type Config struct {
-	ListenAddress string `mapstructure:"LISTEN_ADDRESS"`
-}
-
 func New(ctx context.Context, cfgFile string) *Config {
 	if cfgFile != "" { // enable ability to specify config file via flag
 		viper.SetConfigFile(cfgFile)
@@ -21,6 +17,8 @@ func New(ctx context.Context, cfgFile string) *Config {
 	viper.AddConfigPath("$HOME")           // adding home directory as first search path
 
 	viper.SetDefault("LISTEN_ADDRESS", ":8080")
+	viper.SetDefault("GAME_VERSION", "3.3.5a") // default to WoTLK most popular patch version
+	viper.SetDefault("PAGE_TITLE", "My Private Server Registration")
 
 	viper.AutomaticEnv()
 
