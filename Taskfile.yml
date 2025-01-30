@@ -1,0 +1,15 @@
+version: '3'
+
+tasks:
+  build-go:
+    cmds:
+      - go build main.go
+
+  build-ui:
+    cmds:
+      - npm run build --prefix ui
+
+  build:
+      deps: [ build-ui ]
+      cmds:
+        - task: build-go
