@@ -15,7 +15,7 @@ type Config struct {
 
 type AuthDBService interface {
 	RealmList(ctx context.Context, ids []int) ([]domain.Realm, error)
-	RegisterAccount(ctx context.Context, email string, username string, password string) error
+	RegisterAccount(ctx context.Context, email string, username string, password string) (*domain.Account, error)
 	UpdatePassword(ctx context.Context, username string, exitingPassword string, newPassword string) error
 	GetAccountByName(ctx context.Context, username string) error
 }
@@ -37,4 +37,10 @@ type Endpoints struct {
 	authDBSvc       AuthDBService
 	realmDBServices map[int]RealmDBService
 	emailService    EmailService
+}
+
+type registrationRequest struct {
+	Email    string `json:"email"`
+	Username string `json:"username"`
+	Password string `json:"password"`
 }

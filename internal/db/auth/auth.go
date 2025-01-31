@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log/slog"
 	"slices"
+	"strings"
 
 	"github.com/softwr-skullclown/azeroth-registration/domain"
 )
@@ -42,8 +43,31 @@ func (s *Service) RealmList(ctx context.Context, ids []int) ([]domain.Realm, err
 }
 
 // RegisterAccount attempts to create a new auth account
-func (s *Service) RegisterAccount(ctx context.Context, email string, username string, password string) error {
-	return nil
+func (s *Service) RegisterAccount(ctx context.Context, email string, username string, password string) (*domain.Account, error) {
+	account := domain.Account{
+		Email:    email,
+		Username: username,
+	}
+
+	salt, err := salt()
+	if err != nil {
+		return nil, err
+	}
+
+	verifier := calculateSRP6Verifier(username, password, salt)
+
+	_, err = s.DB.ExecContext(ctx, `INSERT INTO account (email, username, salt, verifier) VALUES (?, ?, ?, ?);`,
+		strings.ToUpper(email), strings.ToUpper(username), salt, verifier)
+	if err != nil {
+		return nil, err
+	}
+
+	err = s.DB.QueryRowContext(ctx, `SELECT id FROM account WHERE username = ?`, strings.ToUpper(username)).Scan(&account.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	return &account, nil
 }
 
 // UpdatePassword updates an accounts password if the existing passwords match

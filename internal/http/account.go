@@ -1,14 +1,38 @@
 package http
 
 import (
+	"encoding/json"
 	"fmt"
+	"io"
 	"log/slog"
 	"net/http"
 )
 
 // handleRegister will attempt to register the user account for the given request
 func (o *Endpoints) handleRegister(w http.ResponseWriter, r *http.Request) {
-	err := sendJsonResponse(w, `{"alive": true}`)
+	ctx := r.Context()
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		slog.ErrorContext(r.Context(), fmt.Sprintf("error reading body: %v", err))
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	var u = registrationRequest{}
+	jsonErr := json.Unmarshal(body, &u)
+	if jsonErr != nil {
+		slog.ErrorContext(r.Context(), fmt.Sprintf("error unmarshalling body: %v", err))
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	account, err := o.authDBSvc.RegisterAccount(ctx, u.Email, u.Username, u.Password)
+	if err != nil {
+		slog.ErrorContext(r.Context(), fmt.Sprintf("error creating account: %v", err))
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+
+	err = sendJsonResponse(w, account)
 	if err != nil {
 		slog.ErrorContext(r.Context(), fmt.Sprintf("error sending json response: %v", err))
 		w.WriteHeader(http.StatusInternalServerError)
