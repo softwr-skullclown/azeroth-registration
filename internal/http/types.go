@@ -21,7 +21,6 @@ type AuthDBService interface {
 }
 
 type RealmDBService interface {
-	GetOnlineCharacterCount(ctx context.Context) (int, error)
 	GetOnlineCharacters(ctx context.Context) error
 }
 
