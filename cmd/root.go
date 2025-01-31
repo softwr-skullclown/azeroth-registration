@@ -31,7 +31,7 @@ on localhost:8080:
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	if err := RootCmd.Execute(); err != nil {
-		slog.Error("error executing root command", err)
+		slog.Error("error executing root command", slog.Any("error", err))
 		os.Exit(-1)
 	}
 }
