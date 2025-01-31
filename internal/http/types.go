@@ -24,10 +24,17 @@ type RealmDBService interface {
 	GetOnlineCharacters(ctx context.Context) ([]domain.Character, error)
 }
 
+type EmailService interface {
+	SendWelcome(email string, username string) error
+	SendPasswordReset(email string, username string, token string) error
+	SendPasswordUpdated(email string, username string) error
+}
+
 // Endpoints represents the http service and its endpoints
 type Endpoints struct {
 	config          Config
 	router          *mux.Router
 	authDBSvc       AuthDBService
 	realmDBServices map[int]RealmDBService
+	emailService    EmailService
 }

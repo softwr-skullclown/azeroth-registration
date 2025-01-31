@@ -6,6 +6,7 @@ import (
 	"github.com/softwr-skullclown/azeroth-registration/internal/db"
 	"github.com/softwr-skullclown/azeroth-registration/internal/db/auth"
 	"github.com/softwr-skullclown/azeroth-registration/internal/db/realm"
+	"github.com/softwr-skullclown/azeroth-registration/internal/email"
 	"github.com/softwr-skullclown/azeroth-registration/internal/http"
 	"github.com/spf13/cobra"
 )
@@ -24,6 +25,18 @@ func init() {
 }
 
 func serve() {
+	emailService := email.New(email.Config{
+		SiteTitle: c.SiteTitle,
+		SMTP: email.SMTP{
+			Auth:     c.SMTP.Auth,
+			Secure:   c.SMTP.Secure,
+			Host:     c.SMTP.Host,
+			Port:     c.SMTP.Port,
+			User:     c.SMTP.User,
+			Pass:     c.SMTP.Pass,
+			SendFrom: c.SMTP.SendFrom,
+		},
+	})
 	authDBSvc := auth.Service{DB: db.New(&db.Config{
 		Host: c.AuthDatabase.Host,
 		Port: c.AuthDatabase.Port,
@@ -49,7 +62,7 @@ func serve() {
 	h := http.New(http.Config{
 		ListenAddress: c.ListenAddress,
 		RealmIds:      realmIds,
-	}, &authDBSvc, realmSvcs)
+	}, &authDBSvc, realmSvcs, emailService)
 
 	err := h.ListenAndServe(context.Background())
 	if err != nil {

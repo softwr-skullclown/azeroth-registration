@@ -27,6 +27,7 @@ func (o *Endpoints) handleRealmList(w http.ResponseWriter, r *http.Request) {
 }
 
 // handleRealmOnlineCharacters will return a list of the online characters for the realm paginated
+// @TODO - paginate results
 func (o *Endpoints) handleRealmOnlineCharacters(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	rawRealmId := vars["id"]

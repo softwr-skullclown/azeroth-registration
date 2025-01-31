@@ -32,13 +32,14 @@ func (o *Endpoints) ListenAndServe(ctx context.Context) error {
 	return http.ListenAndServe(o.config.ListenAddress, o.router)
 }
 
-func New(config Config, authDbService AuthDBService, realmServices map[int]RealmDBService) *Endpoints {
+func New(config Config, authDbService AuthDBService, realmServices map[int]RealmDBService, emailService EmailService) *Endpoints {
 	router := mux.NewRouter()
 	e := &Endpoints{
 		config:          config,
 		router:          router,
 		authDBSvc:       authDbService,
 		realmDBServices: realmServices,
+		emailService:    emailService,
 	}
 	e.handle()
 	return e
