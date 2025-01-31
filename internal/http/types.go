@@ -21,7 +21,7 @@ type AuthDBService interface {
 }
 
 type RealmDBService interface {
-	GetOnlineCharacters(ctx context.Context) error
+	GetOnlineCharacters(ctx context.Context) ([]domain.Character, error)
 }
 
 // Endpoints represents the http service and its endpoints

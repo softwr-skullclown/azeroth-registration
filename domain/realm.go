@@ -7,3 +7,11 @@ type Realm struct {
 	Icon       int    `json:"icon"`
 	Population int    `json:"population"`
 }
+
+type Character struct {
+	Guid  int    `json:"guid"`
+	Name  string `json:"name"`
+	Race  string `json:"race"`
+	Class string `json:"class"`
+	Level string `json:"level"`
+}
