@@ -20,6 +20,7 @@ type Config struct {
 type DatabaseConnection struct {
 	Name string
 	User string
+	Pass string
 	Host string
 	Port int
 }
