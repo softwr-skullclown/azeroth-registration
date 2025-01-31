@@ -1,0 +1,15 @@
+auth_database:
+  host: 127.0.0.1
+  port: 3306
+  user: root
+  pass: password
+  name: acore_auth
+realms:
+  - id: 1
+    name: AzerothCore
+    character_database:
+      host: 127.0.0.1
+      port: 3306
+      user: root
+      pass: password
+      name: acore_characters
