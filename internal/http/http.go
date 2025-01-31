@@ -15,11 +15,13 @@ func (o *Endpoints) handle() {
 	// k8s healthcheck /healthz as per convention
 	o.router.HandleFunc("/healthz", o.handleHealthz).Methods(http.MethodGet)
 
-	o.router.HandleFunc("/register", o.handleRegister).Methods(http.MethodPost)
-	o.router.HandleFunc("/updatepwd", o.handleUpdatePassword).Methods(http.MethodPost)
-	o.router.HandleFunc("/forgotpwd", o.handleForgotPassword).Methods(http.MethodPost)
-	o.router.HandleFunc("/realms", o.handleRealmList).Methods(http.MethodGet)
-	o.router.HandleFunc("/realms/{id}/players", o.handleRealmPlayers).Methods(http.MethodGet)
+	apiRouter := o.router.PathPrefix("/api").Subrouter()
+
+	apiRouter.HandleFunc("/register", o.handleRegister).Methods(http.MethodPost)
+	apiRouter.HandleFunc("/updatepwd", o.handleUpdatePassword).Methods(http.MethodPost)
+	apiRouter.HandleFunc("/forgotpwd", o.handleForgotPassword).Methods(http.MethodPost)
+	apiRouter.HandleFunc("/realms", o.handleRealmList).Methods(http.MethodGet)
+	apiRouter.HandleFunc("/realms/{id}/online-characters", o.handleRealmOnlineCharacters).Methods(http.MethodGet)
 
 	// index/static
 	o.router.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(uiFS)))
@@ -30,11 +32,13 @@ func (o *Endpoints) ListenAndServe(ctx context.Context) error {
 	return http.ListenAndServe(o.config.ListenAddress, o.router)
 }
 
-func New(config Config) *Endpoints {
+func New(config Config, authDbService AuthDBService, realmServices map[int]RealmDBService) *Endpoints {
 	router := mux.NewRouter()
 	e := &Endpoints{
-		config: config,
-		router: router,
+		config:          config,
+		router:          router,
+		authDBSvc:       authDbService,
+		realmDBServices: realmServices,
 	}
 	e.handle()
 	return e
