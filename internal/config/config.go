@@ -11,14 +11,16 @@ import (
 func New(ctx context.Context, cfgFile string) *Config {
 	if cfgFile != "" { // enable ability to specify config file via flag
 		viper.SetConfigFile(cfgFile)
+	} else {
+		viper.SetConfigName("azeroth-reg-config") // name of config file (without extension)
+		viper.SetConfigType("yaml")               // REQUIRED if the config file does not have the extension in the name
+		viper.AddConfigPath("$HOME")              // adding home directory as first search path
+		viper.AddConfigPath(".")                  // optionally look for config in the working directory
 	}
-
-	viper.SetConfigName(".webapp-example") // name of config file (without extension)
-	viper.AddConfigPath("$HOME")           // adding home directory as first search path
 
 	viper.SetDefault("LISTEN_ADDRESS", ":8080")
 	viper.SetDefault("GAME_VERSION", "3.3.5a") // default to WoTLK most popular patch version
-	viper.SetDefault("PAGE_TITLE", "My Private Server Registration")
+	viper.SetDefault("SITE_TITLE", "My Private Server Registration")
 
 	viper.AutomaticEnv()
 

@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log/slog"
+	"slices"
 
 	"github.com/softwr-skullclown/azeroth-registration/domain"
 )
@@ -18,8 +19,8 @@ func (s *Service) RealmList(ctx context.Context, ids []int) ([]domain.Realm, err
 	realms := make([]domain.Realm, 0)
 
 	rows, err := s.DB.QueryContext(ctx, `
-		SELECT id, name, flag, icon, population WHERE id IN($1);
-	`, ids)
+		SELECT id, name, flag, icon, population FROM realmlist;
+	`)
 	if err != nil {
 		return nil, err
 	}
@@ -31,7 +32,9 @@ func (s *Service) RealmList(ctx context.Context, ids []int) ([]domain.Realm, err
 		if err := rows.Scan(&r.Id, &r.Name, &r.Flag, &r.Icon, &r.Population); err != nil {
 			slog.Error(fmt.Sprintf("error scanning realm: %v", err))
 		} else {
-			realms = append(realms, r)
+			if slices.Contains(ids, r.Id) {
+				realms = append(realms, r)
+			}
 		}
 	}
 

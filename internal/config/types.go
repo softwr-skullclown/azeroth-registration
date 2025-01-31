@@ -1,15 +1,15 @@
 package config
 
 type Config struct {
-	ListenAddress string `mapstructure:"LISTEN_ADDRESS"`
+	ListenAddress string `mapstructure:"listen_address"`
 	// SiteTitle is the title of the webpage e.g. My Private Server Registration
-	SiteTitle string
+	SiteTitle string `mapstructure:"site_title"`
 	// RealmList is the Realmlist of your server aka the IP or DOMAIN to access your server e.g. logon.myserver.com
-	RealmList string
+	RealmList string `mapstructure:"realm_list"`
 	// GameVersion is the version of the game that your server is running. e.g. 3.3.5a
-	GameVersion string
+	GameVersion string `mapstructure:"game_version"`
 	// AuthDatabase is used for the registration and account management features
-	AuthDatabase DatabaseConnection
+	AuthDatabase DatabaseConnection `mapstructure:"auth_database"`
 	// Realms is the list of Realms to display associated to the Auth Server above
 	Realms []Realm
 	// SMTP server is required to send out emails
@@ -32,7 +32,7 @@ type Realm struct {
 	// Name is the visible display name of the Realm in the registration UI
 	Name string
 	// CharacterDatabase is used to display number of online players
-	CharacterDatabase DatabaseConnection
+	CharacterDatabase DatabaseConnection `mapstructure:"character_database"`
 }
 
 // SMTP SMTPConfig is required for sending out emails (e.g., password recovery)
@@ -45,5 +45,5 @@ type SMTPConfig struct {
 	// Secure is the encryption method: 'tls' or 'ssl'
 	Secure string
 	// SendFrom is the email address emails are sent from e.g. a no-reply
-	SendFrom string
+	SendFrom string `mapstructure:"send_from"`
 }

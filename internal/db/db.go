@@ -22,17 +22,19 @@ type Service struct {
 	DB *sql.DB
 }
 
-func New(config *Config) *Service {
+func New(c *Config) *Service {
 	s := Service{}
+	dbaddr := fmt.Sprintf("%s:%d", c.Host, c.Port)
 	cfg := mysql.Config{
-		User:   config.User,
-		Passwd: config.Pass,
+		User:   c.User,
+		Passwd: c.Pass,
+		Addr:   dbaddr,
+		DBName: c.Name,
 		Net:    "tcp",
-		Addr:   fmt.Sprintf("%s:%d", config.Host, config.Port),
-		DBName: config.Name,
 	}
+	dsn := cfg.FormatDSN()
 
-	db, err := sql.Open("mysql", cfg.FormatDSN())
+	db, err := sql.Open("mysql", dsn)
 	if err != nil {
 		panic(err)
 	}
