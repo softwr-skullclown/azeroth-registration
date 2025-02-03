@@ -90,7 +90,7 @@ func (s *Service) send(ctx context.Context, userName string, userEmail string, s
 		return fmt.Errorf("failed to create mail client: %v", err)
 	}
 
-	if err = c.DialAndSend(m); err != nil {
+	if err = c.DialAndSendWithContext(ctx, m); err != nil {
 		return fmt.Errorf("failed to send mail: %v", err)
 	}
 
