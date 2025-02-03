@@ -25,7 +25,7 @@ func init() {
 }
 
 func serve() {
-	emailService := email.New(email.Config{
+	emailService := email.New(c.UseOSFilesystem, email.Config{
 		SiteTitle: c.SiteTitle,
 		SMTP: email.SMTP{
 			Auth:     c.SMTP.Auth,
@@ -60,8 +60,9 @@ func serve() {
 	}
 
 	h := http.New(http.Config{
-		ListenAddress: c.ListenAddress,
-		RealmIds:      realmIds,
+		ListenAddress:   c.ListenAddress,
+		RealmIds:        realmIds,
+		UseOSFilesystem: c.UseOSFilesystem,
 	}, &authDBSvc, realmSvcs, emailService)
 
 	err := h.ListenAndServe(context.Background())

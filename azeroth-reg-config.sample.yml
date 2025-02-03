@@ -13,3 +13,8 @@ realms:
       user: root
       pass: password
       name: acore_characters
+smtp:
+  host: "smtp.yoursmtpprovider.com"
+  user: "username"
+  pass: "pass"
+  send_from: "no-reply@myprivateserver.com"

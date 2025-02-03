@@ -14,6 +14,8 @@ type Config struct {
 	Realms []Realm
 	// SMTP server is required to send out emails
 	SMTP SMTPConfig
+	// UseOSFilesystem allows the application to use the filesystem for UI and Email template files (intended for local development speedup)
+	UseOSFilesystem bool `mapstructure:"use_os_filesystem"`
 }
 
 // DatabaseConnection is a MySQL/Maria DB connection used by the auth and realm character databases
@@ -39,11 +41,13 @@ type Realm struct {
 type SMTPConfig struct {
 	Host string
 	Port int
-	Auth bool
-	User string
-	Pass string
-	// Secure is the encryption method: 'tls' or 'ssl'
-	Secure string
+	// Auth method to use for smtp server (defaults to 'PLAIN')
+	Auth   string
+	User   string
+	Pass   string
+	Secure bool
+	// SkipTLSVerify whether or not to skip TLS verification
+	SkipTLSVerify bool `mapstructure:"skip_tls_verify"`
 	// SendFrom is the email address emails are sent from e.g. a no-reply
 	SendFrom string `mapstructure:"send_from"`
 }

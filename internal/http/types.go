@@ -25,9 +25,9 @@ type RealmDBService interface {
 }
 
 type EmailService interface {
-	SendWelcome(email string, username string) error
-	SendPasswordReset(email string, username string, token string) error
-	SendPasswordUpdated(email string, username string) error
+	SendWelcome(ctx context.Context, email string, username string) error
+	SendPasswordReset(ctx context.Context, email string, username string, token string) error
+	SendPasswordUpdated(ctx context.Context, email string, username string) error
 }
 
 // Endpoints represents the http service and its endpoints

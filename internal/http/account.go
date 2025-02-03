@@ -1,6 +1,7 @@
 package http
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -9,6 +10,7 @@ import (
 )
 
 // handleRegister will attempt to register the user account for the given request
+// @TODO - add validations for input field requirements
 func (o *Endpoints) handleRegister(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	body, err := io.ReadAll(r.Body)
@@ -31,6 +33,14 @@ func (o *Endpoints) handleRegister(w http.ResponseWriter, r *http.Request) {
 		slog.ErrorContext(r.Context(), fmt.Sprintf("error creating account: %v", err))
 		w.WriteHeader(http.StatusInternalServerError)
 	}
+
+	emailCtx := context.WithoutCancel(ctx)
+	go func(ctx context.Context, email string, username string) {
+		err := o.emailService.SendWelcome(ctx, email, username)
+		if err != nil {
+			slog.ErrorContext(ctx, "error sending welcome email", slog.Any("error", err), slog.String("username", username), slog.String("email", email))
+		}
+	}(emailCtx, u.Email, u.Username)
 
 	err = sendJsonResponse(w, account)
 	if err != nil {

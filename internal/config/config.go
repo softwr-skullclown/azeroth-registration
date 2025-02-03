@@ -21,6 +21,9 @@ func New(ctx context.Context, cfgFile string) *Config {
 	viper.SetDefault("LISTEN_ADDRESS", ":8080")
 	viper.SetDefault("GAME_VERSION", "3.3.5a") // default to WoTLK most popular patch version
 	viper.SetDefault("SITE_TITLE", "My Private Server Registration")
+	viper.SetDefault("smtp.auth", "PLAIN")
+	viper.SetDefault("smtp.secure", true)
+	viper.SetDefault("smtp.port", 587)
 
 	viper.AutomaticEnv()
 
@@ -37,6 +40,8 @@ func New(ctx context.Context, cfgFile string) *Config {
 	if err != nil {
 		slog.ErrorContext(ctx, fmt.Sprintf("unable to unmarshal config into struct, %v", err))
 	}
+
+	slog.Info("config", slog.Any("config", config))
 
 	return &config
 }
