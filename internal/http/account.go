@@ -10,7 +10,6 @@ import (
 )
 
 // handleRegister will attempt to register the user account for the given request
-// @TODO - add validations for input field requirements
 func (o *Endpoints) handleRegister(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	body, err := io.ReadAll(r.Body)
