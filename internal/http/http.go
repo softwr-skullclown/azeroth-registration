@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"net/http"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/mux"
 	"github.com/softwr-skullclown/azeroth-registration/ui"
 )
@@ -34,12 +35,16 @@ func (o *Endpoints) ListenAndServe(ctx context.Context) error {
 
 func New(config Config, authDbService AuthDBService, realmServices map[int]RealmDBService, emailService EmailService) *Endpoints {
 	router := mux.NewRouter()
+	validate := validator.New(validator.WithRequiredStructEnabled())
+	validate.RegisterValidation("alphanum_dash_underscore", isAlphanumDashUnderscore)
+
 	e := &Endpoints{
 		config:          config,
 		router:          router,
 		authDBSvc:       authDbService,
 		realmDBServices: realmServices,
 		emailService:    emailService,
+		validator:       validate,
 	}
 	e.handle()
 	return e

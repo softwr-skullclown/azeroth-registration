@@ -28,6 +28,14 @@ func (o *Endpoints) handleRegister(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	err = o.validator.Struct(u)
+	if err != nil {
+		slog.ErrorContext(r.Context(), fmt.Sprintf("error validating inputs: %v", err))
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
 	account, err := o.authDBSvc.RegisterAccount(ctx, u.Email, u.Username, u.Password)
 	if err != nil {
 		slog.ErrorContext(r.Context(), fmt.Sprintf("error creating account: %v", err))

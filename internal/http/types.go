@@ -3,6 +3,7 @@ package http
 import (
 	"context"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/mux"
 	"github.com/softwr-skullclown/azeroth-registration/domain"
 )
@@ -37,10 +38,16 @@ type Endpoints struct {
 	authDBSvc       AuthDBService
 	realmDBServices map[int]RealmDBService
 	emailService    EmailService
+	validator       *validator.Validate
 }
 
 type registrationRequest struct {
-	Email    string `json:"email"`
-	Username string `json:"username"`
-	Password string `json:"password"`
+	// Email must be valid email format
+	Email string `json:"email" validate:"required,email"`
+	// Username must be >= 2 chars and <= 16 chars matching regex /^[0-9A-Z-_]+$/
+	Username string `json:"username" validate:"required,gte=2,lte=16,alphanum_dash_underscore"`
+	// Password must between >= 4 chars and <= 16 chars
+	Password string `json:"password" validate:"required,gte=4,lte=16"`
+	// RePassword must match password and its requirements
+	RePassword string `json:"repassword" validate:"required,eqfield=Password"`
 }
