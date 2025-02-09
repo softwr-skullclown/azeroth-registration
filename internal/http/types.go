@@ -9,16 +9,18 @@ import (
 )
 
 type Config struct {
-	ListenAddress   string
-	UseOSFilesystem bool
-	RealmIds        []int
+	ListenAddress         string
+	UseOSFilesystem       bool
+	RealmIds              []int
+	AllowMultipleAccounts bool
 }
 
 type AuthDBService interface {
 	RealmList(ctx context.Context, ids []int) ([]domain.Realm, error)
 	RegisterAccount(ctx context.Context, email string, username string, password string) (*domain.Account, error)
 	UpdatePassword(ctx context.Context, username string, exitingPassword string, newPassword string) error
-	GetAccountByName(ctx context.Context, username string) error
+	GetAccountByName(ctx context.Context, username string) (*domain.Account, error)
+	CheckEmailHasAccount(ctx context.Context, email string) (bool, error)
 }
 
 type RealmDBService interface {

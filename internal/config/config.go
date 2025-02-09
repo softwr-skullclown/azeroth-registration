@@ -18,12 +18,13 @@ func New(ctx context.Context, cfgFile string) *Config {
 		viper.AddConfigPath(".")                  // optionally look for config in the working directory
 	}
 
-	viper.SetDefault("LISTEN_ADDRESS", ":8080")
-	viper.SetDefault("GAME_VERSION", "3.3.5a") // default to WoTLK most popular patch version
-	viper.SetDefault("SITE_TITLE", "My Private Server Registration")
+	viper.SetDefault("listen_address", ":8080")
+	viper.SetDefault("game_version", "3.3.5a") // default to WoTLK most popular patch version
+	viper.SetDefault("site_title", "My Private Server Registration")
 	viper.SetDefault("smtp.auth", "PLAIN")
 	viper.SetDefault("smtp.secure", true)
 	viper.SetDefault("smtp.port", 587)
+	viper.SetDefault("allow_multiple_accounts", true)
 
 	viper.AutomaticEnv()
 

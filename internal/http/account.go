@@ -35,6 +35,32 @@ func (o *Endpoints) handleRegister(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if !o.config.AllowMultipleAccounts {
+		exists, err := o.authDBSvc.CheckEmailHasAccount(ctx, u.Email)
+		if err != nil {
+			slog.ErrorContext(r.Context(), fmt.Sprintf("error checking if email has accounts: %v", err))
+			w.WriteHeader(http.StatusInternalServerError)
+		}
+		if exists {
+			slog.ErrorContext(r.Context(), "multiple accounts per email is disabled")
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+	}
+
+	existingAccount, err := o.authDBSvc.GetAccountByName(ctx, u.Username)
+	if err != nil {
+		slog.ErrorContext(r.Context(), fmt.Sprintf("error checking if account with username exists: %v", err))
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	if existingAccount != nil {
+		slog.ErrorContext(r.Context(), "username already taken")
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
 	account, err := o.authDBSvc.RegisterAccount(ctx, u.Email, u.Username, u.Password)
 	if err != nil {
 		slog.ErrorContext(r.Context(), fmt.Sprintf("error creating account: %v", err))

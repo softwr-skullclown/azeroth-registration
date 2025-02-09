@@ -16,6 +16,8 @@ type Config struct {
 	SMTP SMTPConfig
 	// UseOSFilesystem allows the application to use the filesystem for UI and Email template files (intended for local development speedup)
 	UseOSFilesystem bool `mapstructure:"use_os_filesystem"`
+	// AllowMultipleAccounts allows a single email to have multiple user accounts
+	AllowMultipleAccounts bool `mapstructure:"allow_multiple_accounts"`
 }
 
 // DatabaseConnection is a MySQL/Maria DB connection used by the auth and realm character databases

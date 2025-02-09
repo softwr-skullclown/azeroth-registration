@@ -76,6 +76,29 @@ func (s *Service) UpdatePassword(ctx context.Context, username string, exitingPa
 }
 
 // GetAccountByName gets the auth account by name to be used in forgot password flow
-func (s *Service) GetAccountByName(ctx context.Context, username string) error {
-	return nil
+func (s *Service) GetAccountByName(ctx context.Context, username string) (*domain.Account, error) {
+	account := domain.Account{}
+	err := s.DB.QueryRowContext(ctx,
+		`SELECT id, username, email FROM account WHERE username = ?`,
+		strings.ToUpper(username),
+	).Scan(&account.Id, &account.Username, &account.Email)
+	if err == sql.ErrNoRows {
+		return nil, nil
+	} else if err != nil {
+		return nil, err
+	}
+
+	return &account, nil
+}
+
+// CheckEmailHasAccount checks if the provided email has any existing accounts
+func (s *Service) CheckEmailHasAccount(ctx context.Context, email string) (bool, error) {
+	count := 0
+
+	err := s.DB.QueryRowContext(ctx, `SELECT count(id) FROM account WHERE email = ?`, strings.ToUpper(email)).Scan(&count)
+	if err != nil {
+		return count > 0, err
+	}
+
+	return count > 0, nil
 }

@@ -60,9 +60,10 @@ func serve() {
 	}
 
 	h := http.New(http.Config{
-		ListenAddress:   c.ListenAddress,
-		RealmIds:        realmIds,
-		UseOSFilesystem: c.UseOSFilesystem,
+		ListenAddress:         c.ListenAddress,
+		RealmIds:              realmIds,
+		UseOSFilesystem:       c.UseOSFilesystem,
+		AllowMultipleAccounts: c.AllowMultipleAccounts,
 	}, &authDBSvc, realmSvcs, emailService)
 
 	err := h.ListenAndServe(context.Background())
