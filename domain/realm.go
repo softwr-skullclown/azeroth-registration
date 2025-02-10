@@ -9,9 +9,10 @@ type Realm struct {
 }
 
 type Character struct {
-	Guid  int    `json:"guid"`
-	Name  string `json:"name"`
-	Race  string `json:"race"`
-	Class string `json:"class"`
-	Level string `json:"level"`
+	Guid   int    `json:"guid"`
+	Name   string `json:"name"`
+	Race   int    `json:"race"`
+	Class  int    `json:"class"`
+	Level  int    `json:"level"`
+	Gender int    `json:"gender"`
 }

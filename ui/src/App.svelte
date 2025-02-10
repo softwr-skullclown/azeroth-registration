@@ -12,11 +12,11 @@
   }
 
   // Initial state with loading values
-  let pageConfig: UIConfig = {
+  let pageConfig: UIConfig = $state({
     siteTitle: "Azeroth Registration",
     gameVersion: "3.3.5a",
     realmList: "logon.yourserver.com",
-  };
+  });
 
   let navigation: NavigationItem[] = [
     {
@@ -30,8 +30,8 @@
   }
 
   // Error state
-  let error: string | null = null;
-  let isLoading: boolean = true;
+  let error: string | null = $state(null);
+  let isLoading: boolean = $state(true);
 
   // Fetch configuration when component mounts
   async function fetchConfig(): Promise<void> {
@@ -110,8 +110,8 @@
             Server Information
           </h2>
           <p class="text-gray-600 dark:text-gray-300">
-            Realmlist: {pageConfig.realmList}<br />
-            Game Version: {pageConfig.gameVersion}
+            Realmlist: <span class="text-blue-500 dark:text-cyan-500">{pageConfig.realmList}</span><br />
+            Game Version: <span class="text-blue-500 dark:text-cyan-500">{pageConfig.gameVersion}</span>
           </p>
         </section>
       </div>

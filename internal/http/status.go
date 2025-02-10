@@ -37,6 +37,7 @@ func (o *Endpoints) handleRealmOnlineCharacters(w http.ResponseWriter, r *http.R
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+
 	characters, err := o.realmDBServices[realmId].GetOnlineCharacters(r.Context())
 	if err != nil {
 		slog.ErrorContext(r.Context(), fmt.Sprintf("error getting realm online characters list: %v", err))

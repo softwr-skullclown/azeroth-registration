@@ -1,17 +1,18 @@
 <script lang="ts">
+    import OnlineCharacters from './OnlineCharacters.svelte'
   interface Realm {
-    id: number,
-    name: string,
-    flag: number,
-    icon: number,
-    population: number,
+    id: number;
+    name: string;
+    flag: number;
+    icon: number;
+    population: number;
   }
 
-  let realms: Realm[] = [];
+  let realms: Realm[] = $state([]);
 
   // Error state
-  let error: string | null = null;
-  let isLoading: boolean = true;
+  let error: string | null = $state(null);
+  let isLoading: boolean = $state(true);
 
   async function fetchRealms(): Promise<void> {
     try {
@@ -58,6 +59,9 @@
   <div class="text-gray-600 dark:text-gray-300">
     {#each realms as realm}
         <div>{realm.name}</div>
+        <div class="p-8">
+            <OnlineCharacters realmId={realm.id} />
+        </div>
     {/each}
   </div>
 {/if}

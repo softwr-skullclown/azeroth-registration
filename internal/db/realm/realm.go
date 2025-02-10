@@ -17,7 +17,7 @@ func (s *Service) GetOnlineCharacters(ctx context.Context) ([]domain.Character, 
 	characters := make([]domain.Character, 0)
 
 	rows, err := s.DB.QueryContext(ctx, `
-		SELECT guid, name, race, class, level FROM characters WHERE online = 1;
+		SELECT guid, name, race, class, level, gender FROM characters WHERE online = 1;
 	`)
 
 	if err != nil {
@@ -28,7 +28,7 @@ func (s *Service) GetOnlineCharacters(ctx context.Context) ([]domain.Character, 
 
 	for rows.Next() {
 		c := domain.Character{}
-		if err := rows.Scan(&c.Guid, &c.Name, &c.Race, &c.Class, &c.Level); err != nil {
+		if err := rows.Scan(&c.Guid, &c.Name, &c.Race, &c.Class, &c.Level, &c.Gender); err != nil {
 			slog.Error("error scanning character", slog.Any("error", err))
 		} else {
 			characters = append(characters, c)
