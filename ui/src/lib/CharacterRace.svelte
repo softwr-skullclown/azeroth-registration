@@ -23,7 +23,7 @@
             raceName = "Nightelf";
             break;
         case "5":
-            raceName = "Scourge";
+            raceName = "Undead";
             break;
         case "6":
             raceName = "Tauren";
