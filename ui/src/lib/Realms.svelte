@@ -57,7 +57,7 @@
   </h2>
   <div class="text-gray-600 dark:text-gray-300">
     {#each realms as realm}
-        <div>{realm.name} [{realm.population} players online]</div>
+        <div>{realm.name}</div>
     {/each}
   </div>
 {/if}
