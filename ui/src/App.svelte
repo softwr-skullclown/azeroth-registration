@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Realms from './lib/Realms.svelte'
   interface NavigationItem {
     label: string;
     url: string;
@@ -100,12 +101,7 @@
       <div class="flex gap-6">
         <!-- Main Content Section (3/4 width) -->
         <section class="w-3/4 bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-          <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">
-            tbd.
-          </h2>
-          <p class="text-gray-600 dark:text-gray-300">
-            tbd.
-          </p>
+          <Realms />
         </section>
 
         <!-- Sidebar Section (1/4 width) -->
