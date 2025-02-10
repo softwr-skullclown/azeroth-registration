@@ -64,6 +64,11 @@ func serve() {
 		RealmIds:              realmIds,
 		UseOSFilesystem:       c.UseOSFilesystem,
 		AllowMultipleAccounts: c.AllowMultipleAccounts,
+		UIConfig: http.UIConfig{
+			SiteTitle:   c.SiteTitle,
+			RealmList:   c.RealmList,
+			GameVersion: c.GameVersion,
+		},
 	}, &authDBSvc, realmSvcs, emailService)
 
 	err := h.ListenAndServe(context.Background())

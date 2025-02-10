@@ -13,6 +13,13 @@ type Config struct {
 	UseOSFilesystem       bool
 	RealmIds              []int
 	AllowMultipleAccounts bool
+	UIConfig              UIConfig
+}
+
+type UIConfig struct {
+	SiteTitle   string `json:"siteTitle"`
+	RealmList   string `json:"realmList"`
+	GameVersion string `json:"gameVersion"`
 }
 
 type AuthDBService interface {

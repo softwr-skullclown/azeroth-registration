@@ -1,3 +1,4 @@
+realm_list: "logon.yourserver.com"
 auth_database:
   host: 127.0.0.1
   port: 3306

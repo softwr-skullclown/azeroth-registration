@@ -1,47 +1,127 @@
 <script lang="ts">
-  import svelteLogo from './assets/svelte.svg'
-  import viteLogo from '/vite.svg'
-  import Counter from './lib/Counter.svelte'
+  interface NavigationItem {
+    label: string;
+    url: string;
+  }
+
+  interface UIConfig {
+    siteTitle: string;
+    gameVersion: string;
+    realmList: string;
+  }
+
+  // Initial state with loading values
+  let pageConfig: UIConfig = {
+    siteTitle: "Azeroth Registration",
+    gameVersion: "3.3.5a",
+    realmList: "logon.yourserver.com",
+  };
+
+  let navigation: NavigationItem[] = [
+    {
+      label: "Register",
+      url: "/register",
+    },
+  ];
+
+  function updatePageTitle(newTitle: string): void {
+    document.title = newTitle;
+  }
+
+  // Error state
+  let error: string | null = null;
+  let isLoading: boolean = true;
+
+  // Fetch configuration when component mounts
+  async function fetchConfig(): Promise<void> {
+    try {
+      const response = await fetch('/api/config');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data: UIConfig = await response.json();
+      pageConfig = data;
+      updatePageTitle(data.siteTitle);
+      error = null;
+    } catch (err) {
+      error = err instanceof Error ? err.message : 'An error occurred while fetching configuration';
+      console.error('Error fetching configuration:', err);
+    } finally {
+      isLoading = false;
+    }
+  }
+
+  // Call the fetch function when component mounts
+  fetchConfig();
 </script>
 
-<main>
-  <div>
-    <a href="https://vite.dev" target="_blank" rel="noreferrer">
-      <img src={viteLogo} class="logo" alt="Vite Logo" />
-    </a>
-    <a href="https://svelte.dev" target="_blank" rel="noreferrer">
-      <img src={svelteLogo} class="logo svelte" alt="Svelte Logo" />
-    </a>
-  </div>
-  <h1>Vite + Svelte</h1>
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+  <!-- Navigation Bar -->
+  <nav class="bg-white dark:bg-gray-800 shadow-md">
+    <div class="container mx-auto px-4">
+      <div class="relative flex items-center justify-center h-16">
+        <!-- Navigation Items - Centered -->
+        <div class="w-full flex justify-center items-center">
+          <div class="flex space-x-8">
+            {#each navigation as navItem (navItem.url)}
+              <a 
+                href={navItem.url} 
+                class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"
+              >
+                {navItem.label}
+              </a>
+            {/each}
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
 
-  <div class="card">
-    <Counter />
-  </div>
+  <!-- Error Message -->
+  {#if error}
+    <div class="container mx-auto px-4 py-4">
+      <div class="bg-red-100 dark:bg-red-900 border border-red-400 text-red-700 dark:text-red-200 px-4 py-3 rounded relative" role="alert">
+        <strong class="font-bold">Error:</strong>
+        <span class="block sm:inline"> {error}</span>
+      </div>
+    </div>
+  {/if}
 
-  <p>
-    Check out <a href="https://github.com/sveltejs/kit#readme" target="_blank" rel="noreferrer">SvelteKit</a>, the official Svelte app framework powered by Vite!
-  </p>
+  <!-- Loading State -->
+  {#if isLoading}
+    <div class="container mx-auto px-4 py-8">
+      <div class="flex justify-center items-center">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 dark:border-white"></div>
+      </div>
+    </div>
+  {:else}
+    <!-- Main Content Sections -->
+    <main class="container mx-auto px-4 py-8">
+      <div class="flex gap-6">
+        <!-- Main Content Section (3/4 width) -->
+        <section class="w-3/4 bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+          <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">
+            tbd.
+          </h2>
+          <p class="text-gray-600 dark:text-gray-300">
+            tbd.
+          </p>
+        </section>
 
-  <p class="read-the-docs">
-    Click on the Vite and Svelte logos to learn more
-  </p>
-</main>
+        <!-- Sidebar Section (1/4 width) -->
+        <section class="w-1/4 bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+          <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">
+            Server Information
+          </h2>
+          <p class="text-gray-600 dark:text-gray-300">
+            Realmlist: {pageConfig.realmList}<br />
+            Game Version: {pageConfig.gameVersion}
+          </p>
+        </section>
+      </div>
+    </main>
+  {/if}
+</div>
 
 <style>
-  .logo {
-    height: 6em;
-    padding: 1.5em;
-    will-change: filter;
-    transition: filter 300ms;
-  }
-  .logo:hover {
-    filter: drop-shadow(0 0 2em #646cffaa);
-  }
-  .logo.svelte:hover {
-    filter: drop-shadow(0 0 2em #ff3e00aa);
-  }
-  .read-the-docs {
-    color: #888;
-  }
 </style>
