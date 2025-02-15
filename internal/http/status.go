@@ -5,8 +5,6 @@ import (
 	"log/slog"
 	"net/http"
 	"strconv"
-
-	"github.com/gorilla/mux"
 )
 
 // handleRealmList will return a list of the realms configured with online character counts
@@ -29,8 +27,7 @@ func (o *Endpoints) handleRealmList(w http.ResponseWriter, r *http.Request) {
 // handleRealmOnlineCharacters will return a list of the online characters for the realm paginated
 // @TODO - paginate results
 func (o *Endpoints) handleRealmOnlineCharacters(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	rawRealmId := vars["id"]
+	rawRealmId := r.PathValue("id")
 	realmId, err := strconv.Atoi(rawRealmId)
 	if err != nil {
 		slog.Warn("bad realm id", slog.String("realm_id", rawRealmId))

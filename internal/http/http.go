@@ -9,26 +9,27 @@ import (
 	"strings"
 
 	"github.com/go-playground/validator/v10"
-	"github.com/gorilla/mux"
 	"github.com/softwr-skullclown/azeroth-registration/ui"
 )
 
 func (o *Endpoints) handle() {
 	uiFS := ui.New(o.config.UseOSFilesystem)
 	// k8s healthcheck /healthz as per convention
-	o.router.HandleFunc("/healthz", o.handleHealthz).Methods(http.MethodGet)
+	o.router.HandleFunc("GET /health", o.handleHealthz)
 
-	apiRouter := o.router.PathPrefix("/api").Subrouter()
+	apiRouter := http.NewServeMux()
 
-	apiRouter.HandleFunc("/config", o.handleUIConfig).Methods(http.MethodGet)
-	apiRouter.HandleFunc("/register", o.handleRegister).Methods(http.MethodPost)
-	apiRouter.HandleFunc("/updatepwd", o.handleUpdatePassword).Methods(http.MethodPost)
-	apiRouter.HandleFunc("/forgotpwd", o.handleForgotPassword).Methods(http.MethodPost)
-	apiRouter.HandleFunc("/realms", o.handleRealmList).Methods(http.MethodGet)
-	apiRouter.HandleFunc("/realms/{id}/online-characters", o.handleRealmOnlineCharacters).Methods(http.MethodGet)
+	apiRouter.HandleFunc("GET /config", o.handleUIConfig)
+	apiRouter.HandleFunc("POST /register", o.handleRegister)
+	apiRouter.HandleFunc("POST /updatepwd", o.handleUpdatePassword)
+	apiRouter.HandleFunc("POST /forgotpwd", o.handleForgotPassword)
+	apiRouter.HandleFunc("GET /realms", o.handleRealmList)
+	apiRouter.HandleFunc("GET /realms/{id}/online-characters", o.handleRealmOnlineCharacters)
+
+	o.router.Handle("/api/", http.StripPrefix("/api", apiRouter))
 
 	// index/static
-	o.router.PathPrefix("/").Handler(http.StripPrefix("/", spaHandler(uiFS)))
+	o.router.Handle("/", http.StripPrefix("/", spaHandler(uiFS)))
 }
 
 func (o *Endpoints) ListenAndServe(ctx context.Context) error {
@@ -37,7 +38,7 @@ func (o *Endpoints) ListenAndServe(ctx context.Context) error {
 }
 
 func New(config Config, authDbService AuthDBService, realmServices map[int]RealmDBService, emailService EmailService) *Endpoints {
-	router := mux.NewRouter()
+	router := http.NewServeMux()
 	validate := validator.New(validator.WithRequiredStructEnabled())
 	validate.RegisterValidation("alphanum_dash_underscore", isAlphanumDashUnderscore)
 

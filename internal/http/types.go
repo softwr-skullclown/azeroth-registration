@@ -2,9 +2,9 @@ package http
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/go-playground/validator/v10"
-	"github.com/gorilla/mux"
 	"github.com/softwr-skullclown/azeroth-registration/domain"
 )
 
@@ -43,7 +43,7 @@ type EmailService interface {
 // Endpoints represents the http service and its endpoints
 type Endpoints struct {
 	config          Config
-	router          *mux.Router
+	router          *http.ServeMux
 	authDBSvc       AuthDBService
 	realmDBServices map[int]RealmDBService
 	emailService    EmailService
